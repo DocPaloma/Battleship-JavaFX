@@ -7,21 +7,14 @@ public class Ship {
     protected int lifePoints;
     protected int size;
     protected boolean isAlive;
-    protected boolean verticalDir;
+    protected int direction;
 
     public Ship() {
 
     }
 
-    public boolean checkIsAlive(){
-        if (lifePoints == 0){
-            isAlive = false;
-            return isAlive;
-        }
-        else {
-            return isAlive;
-        }
-
+    public boolean checkIsSunk(){
+        return lifePoints == 0;
     }
 
     public int takeDamage(){
@@ -29,16 +22,20 @@ public class Ship {
         return lifePoints;
     }
 
-    public void setVerticalDir(){
-        verticalDir = true;
+    public void setDirVert(){
+        direction = 1;
+    }
+
+    public void setDirHor(){
+        direction = 2;
     }
 
     public int getSize(){
         return size;
     }
 
-    public boolean getVerticalDir(){
-        return verticalDir;
+    public int getDir(){
+        return direction;
     }
 
 }

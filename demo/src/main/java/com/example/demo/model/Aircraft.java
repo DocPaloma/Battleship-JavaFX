@@ -6,6 +6,6 @@ public class Aircraft extends Ship{
         lifePoints = 4;
         size = 4;
         isAlive = true;
-        verticalDir = false;
+        direction = 0;
     }
 }

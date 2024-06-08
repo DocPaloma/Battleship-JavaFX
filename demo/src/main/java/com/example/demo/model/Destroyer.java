@@ -6,6 +6,6 @@ public class Destroyer extends Ship{
         lifePoints = 2;
         size = 2;
         isAlive = true;
-        verticalDir = false;
+        direction = 0;
     }
 }

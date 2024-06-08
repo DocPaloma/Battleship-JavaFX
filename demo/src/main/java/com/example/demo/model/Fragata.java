@@ -6,6 +6,6 @@ public class Fragata extends Ship{
         lifePoints = 1;
         size = 1;
         isAlive = true;
-        verticalDir = false;
+        direction = 0;
     }
 }

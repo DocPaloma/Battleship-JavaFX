@@ -13,9 +13,14 @@ public class Main extends Application {
         Board game = new Board();
         game.printBoard();
 
+
     }
 
     public static void main(String[] args) {
         launch();
     }
+
+
 }
+
+

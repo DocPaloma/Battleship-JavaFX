@@ -8,7 +8,7 @@ public class Submarine extends Ship{
         lifePoints = 3;
         size = 3;
         isAlive = true;
-        verticalDir = false;
+        direction = 0;
     }
 
 }
