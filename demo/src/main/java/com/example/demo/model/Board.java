@@ -1,23 +1,16 @@
 package com.example.demo.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.lang.Long.SIZE;
 
 public class Board implements Serializable {
     private static int boardSize= 10;
     private char[][] board = new char[boardSize][boardSize];
-    private char[][] boardComp = new char[boardSize][boardSize];
     private Ship[] flota = new Ship[10];
-    private Ship[] flotaComp = new Ship[10];
-    private static Map<String, Ship> shipMap = new HashMap<>();
+    private Ship[][] shipsGrid;
 
-
-    public Board(){
-
+    public Board() {
+        board = new char[10][10];
+        shipsGrid = new Ship[10][10];
         initializeBoard();
     }
 
@@ -25,14 +18,6 @@ public class Board implements Serializable {
         for (int i = 0; i < boardSize; i++){
             for (int j = 0; j < boardSize; j++){
                 board[i][j] = '~';
-            }
-        }
-    }
-
-    public void initializeCompBoard(){
-        for (int i = 0; i < boardSize; i++){
-            for (int j = 0; j < boardSize; j++){
-                boardComp[i][j] = '~';
             }
         }
     }
@@ -66,6 +51,32 @@ public class Board implements Serializable {
         System.out.println();
     }
 
+    public boolean receiveAttack(int x, int y) {
+        if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+            System.out.println("Attack out of bounds.");
+            return false;
+        }
+
+        if (board[y][x] == '~') {
+            board[y][x] = 'M';  // Miss
+            System.out.println("Miss!");
+            return false;
+        } else if (board[y][x] == 'H' || board[y][x] == 'M') {
+            System.out.println("Already attacked this position.");
+            return false;
+        } else {
+            board[y][x] = 'H';  // Hit
+            Ship hitShip = shipsGrid[y][x];
+            hitShip.takeDamage();
+            if (hitShip.checkIsSunk()) {
+                System.out.println("You sunk an enemy ship !");
+            } else {
+                System.out.println("Hit!");
+            }
+            return true;
+        }
+    }
+
     //se crea la flota a poner del jugador
     public void setFlota() {
         flota[0] = new Aircraft();
@@ -83,9 +94,8 @@ public class Board implements Serializable {
     }
 
     //metodo para verificar si la posición es valida
-    private boolean canPlaceShip(Ship ship,int row, int col) {
+    public boolean canPlaceShip(Ship ship, int row, int col, int horizontal) {
         int size = ship.getSize();
-        int horizontal = ship.getDir();
 
         if (horizontal == 1) {
             if (col + size > boardSize) return false;
@@ -102,26 +112,9 @@ public class Board implements Serializable {
         return true;
     }
 
-    //Metodo para posicionar los barcos si la posición es correcta
-    private void placeShips() {
-        setFlota();
-        for (Ship ship : flota) {
-            boolean placed = false;
-            while (!placed) {
-                int row = (int) (Math.random() * SIZE);
-                int col = (int) (Math.random() * SIZE);
-                if (canPlaceShip(ship, row, col)) {
-                    placeShip(ship, row, col);
-                    placed = true;
-                }
-            }
-        }
-    }
-
     //Posiciona los barcos segun su tipo
-    private void placeShip(Ship ship, int row, int col) {
+    public void placeShip(Ship ship, int row, int col, int horizontal) {
         int size = ship.getSize();
-        int horizontal = ship.getDir();
         char shipChar;
 
         if (ship instanceof Destroyer) {
@@ -137,15 +130,60 @@ public class Board implements Serializable {
         if (horizontal == 1) {
             for (int i = 0; i < size; i++) {
                 board[row][col + i] = 'S';
-                shipMap.put(row + "," + (col + i), ship);
+                shipsGrid[row][col + i] = ship;
             }
         } else {
             for (int i = 0; i < size; i++) {
                 board[row + i][col] = 'S';
-                shipMap.put(row + "," + (col + i), ship);
+                shipsGrid[row][col + i]= ship;
             }
         }
     }
 
+    public void setupDefaultMap(int mapNumber) {
 
+        switch (mapNumber) {
+            case 1:
+                placeShip(new Destroyer(), 0, 0, 1);
+                placeShip(new Submarine(), 2, 2, 2);
+                placeShip(new Fragata(), 5, 5, 1);
+                placeShip(new Aircraft(), 7, 1, 2);
+                placeShip(new Destroyer(), 3, 9, 1);
+                placeShip(new Submarine(), 2, 2, 2);
+                placeShip(new Destroyer(), 0, 7, 1);
+                placeShip(new Fragata(), 8, 5, 2);
+                placeShip(new Fragata(), 3, 5, 1);
+                placeShip(new Fragata(), 4, 5, 1);
+                break;
+            case 2:
+                placeShip(new Destroyer(), 9, 8, 1);
+                placeShip(new Submarine(), 1, 1, 2);
+                placeShip(new Fragata(), 4, 6, 1);
+                placeShip(new Aircraft(), 2, 3, 2);
+                placeShip(new Submarine(), 6, 2, 1);
+                placeShip(new Fragata(), 4, 7, 1);
+                placeShip(new Fragata(), 4, 8, 1);
+                placeShip(new Fragata(), 4, 9, 1);
+                placeShip(new Destroyer(), 8, 8, 1);
+                placeShip(new Destroyer(), 7, 8, 1);
+                break;
+            case 3:
+                placeShip(new Destroyer(), 8, 0, 1);
+                placeShip(new Submarine(), 3, 3, 2);
+                placeShip(new Fragata(), 6, 6, 1);
+                placeShip(new Aircraft(), 0, 7, 2);
+                placeShip(new Fragata(), 4, 4, 1);
+                break;
+        }
+    }
+
+
+    public char[][] getBoard() {
+        return board;
+    }
+
+
+    public Ship[] getFlota(){
+        return flota;
+    }
 }

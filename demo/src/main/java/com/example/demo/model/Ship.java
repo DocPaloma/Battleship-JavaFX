@@ -17,6 +17,8 @@ public class Ship {
         return lifePoints == 0;
     }
 
+
+
     public int takeDamage(){
         lifePoints = lifePoints - 1;
         return lifePoints;
