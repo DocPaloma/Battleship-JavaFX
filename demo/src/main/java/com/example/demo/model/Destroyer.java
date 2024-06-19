@@ -2,14 +2,14 @@ package com.example.demo.model;
 
 import java.awt.*;
 
-public class Fragata extends Ship{
+public class Destroyer extends Ship{
 
-    public Fragata(){
-        lifePoints = 1;
-        size = 1;
+    public Destroyer(){
+        lifePoints = 2;
+        size = 2;
         isAlive = true;
         direction = 0;
-        shipChar = 'F';
+        shipChar = 'D';
     }
 
     public void draw(Graphics2D g, int x, int y, boolean horizontal) {

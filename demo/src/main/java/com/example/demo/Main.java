@@ -1,23 +1,55 @@
 package com.example.demo;
 
+
+import com.example.demo.controller.GameController;
+import com.example.demo.model.SaveGameException;
+import com.example.demo.view.MenuStage;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 
 import java.io.IOException;
 
 public class Main extends Application {
+    private Stage primaryStage;
+    private GameController gameController;
+
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage stage){
+
+
     }
 
     public static void main(String[] args) {
         launch();
     }
+
+    private void showMenu() {
+        try {
+            MenuStage menuStage = MenuStage.getInstance();
+            menuStage.getMenuController().setBattleshipApp(this);
+            menuStage.getMenuController().setPrimaryStage(primaryStage);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showInstructions() {
+        gameController.showInstructions();
+    }
+
+    public void newGame() {
+        gameController.startNewGame();
+    }
+
+    public void loadGame() {
+        gameController.loadSavedGame();
+    }
+
+    public void startGame() {
+        gameController.startNewGame();
+    }
+
 }
+
+
