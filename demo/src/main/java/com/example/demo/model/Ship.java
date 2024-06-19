@@ -1,13 +1,15 @@
 package com.example.demo.model;
 
+import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.List;
 
-public class Ship {
+public abstract class Ship {
     protected int lifePoints;
     protected int size;
     protected boolean isAlive;
     protected int direction;
+    protected char shipChar;
 
     public Ship() {
 
@@ -40,4 +42,9 @@ public class Ship {
         return direction;
     }
 
+    public char getShipChar() {
+        return shipChar;
+    }
+
+    public abstract void draw(Graphics2D g, int x, int y, boolean horizontal);
 }

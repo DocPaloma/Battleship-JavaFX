@@ -3,7 +3,7 @@ package com.example.demo.model;
 import java.io.Serializable;
 
 public class Board implements Serializable {
-    private static int boardSize= 10;
+    private static final int boardSize= 10;
     private char[][] board = new char[boardSize][boardSize];
     private Ship[] flota = new Ship[10];
     private Ship[][] shipsGrid;
@@ -113,31 +113,21 @@ public class Board implements Serializable {
     }
 
     //Posiciona los barcos segun su tipo
-    public void placeShip(Ship ship, int row, int col, int horizontal) {
-        int size = ship.getSize();
-        char shipChar;
-
-        if (ship instanceof Destroyer) {
-            shipChar = 'D';
-        } else if (ship instanceof Aircraft) {
-            shipChar = 'A';
-        } else if (ship instanceof Fragata) {
-            shipChar = 'F';
-        } else if (ship instanceof Submarine) {
-            shipChar = 'S';
-        }
-
-        if (horizontal == 1) {
-            for (int i = 0; i < size; i++) {
-                board[row][col + i] = 'S';
-                shipsGrid[row][col + i] = ship;
+    public boolean placeShip(Ship ship, int x, int y, int horizontal) {
+        int length = ship.getSize();
+        if (canPlaceShip(ship, x, y, horizontal)) {
+            for (int i = 0; i < length; i++) {
+                if (horizontal == 1) {
+                    shipsGrid[x][y + i] = ship;
+                    board[x][y + i] = ship.getShipChar();
+                } else {
+                    shipsGrid[x + i][y] = ship;
+                    board[x + i][y] = ship.getShipChar();
+                }
             }
-        } else {
-            for (int i = 0; i < size; i++) {
-                board[row + i][col] = 'S';
-                shipsGrid[row][col + i]= ship;
-            }
+            return true;
         }
+        return false;
     }
 
     public void setupDefaultMap(int mapNumber) {
@@ -182,8 +172,29 @@ public class Board implements Serializable {
         return board;
     }
 
-
-    public Ship[] getFlota(){
-        return flota;
+    private void markSunkShip(Ship ship) {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (shipsGrid[i][j] == ship) {
+                    board[i][j] = 'W';
+                }
+            }
+        }
     }
+
+    public boolean isHit(int x, int y) {
+        return board[x][y] == 'H' || board[x][y] == 'M' || board[x][y] == 'S';
+    }
+
+    public boolean isAllSunk() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (shipsGrid[i][j] != null && !shipsGrid[i][j].checkIsSunk()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
